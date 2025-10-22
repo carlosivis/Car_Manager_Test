@@ -12,5 +12,6 @@ data class CarModel(
     val model: String,
     val year: Int,
     val color: String,
-    val lastestRevision: List<String>
+    val lastestRevision: List<String>,
+    val nextRevision: List<String>
 ) : Parcelable

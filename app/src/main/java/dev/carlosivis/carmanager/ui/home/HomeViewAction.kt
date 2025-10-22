@@ -5,7 +5,8 @@ sealed class HomeViewAction {
     object GetCars : HomeViewAction()
     object Navigate {
         object ToAddCar : HomeViewAction()
-        object ToEditCar : HomeViewAction()
+        data class ToEditCar(val carId: Long) : HomeViewAction()
         data class ToDetailsCar(val carId: Long) : HomeViewAction()
     }
+    data class DeleteCar(val carId: Long) : HomeViewAction()
 }
