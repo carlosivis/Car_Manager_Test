@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Car Manager</string>
+    <string name="create_car_title">Adicionar Novo Carro</string>
+    <string name="name_label">Nome</string>
+    <string name="brand_label">Marca</string>
+    <string name="model_label">Modelo</string>
+    <string name="year_label">Ano</string>
+    <string name="color_label">Cor</string>
+    <string name="latest_revision_label">Última Revisão</string>
+    <string name="next_revision_label">Próxima Revisão</string>
+    <string name="save_button_label">Salvar</string>
 </resources>

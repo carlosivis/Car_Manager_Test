@@ -16,10 +16,12 @@ class HomeViewModel(): ViewModel(), KoinComponent {
             is HomeViewAction.Navigate.ToAddCar -> TODO()
             is HomeViewAction.Navigate.ToDetailsCar -> TODO()
             is HomeViewAction.Navigate.ToEditCar -> TODO()
+            is HomeViewAction.DeleteCar -> TODO()
         }
     }
 
     private fun getCars(){
 
     }
+
 }

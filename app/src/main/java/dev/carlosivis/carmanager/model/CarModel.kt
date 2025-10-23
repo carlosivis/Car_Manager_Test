@@ -13,5 +13,18 @@ data class CarModel(
     val year: Int,
     val color: String,
     val lastestRevision: List<String>,
-    val nextRevision: List<String>
-) : Parcelable
+    val nextRevision: String
+) : Parcelable {
+    companion object {
+        fun empty() = CarModel(
+            id = 0,
+            name = "",
+            brand = "",
+            model = "",
+            year = 0,
+            color = "",
+            lastestRevision = emptyList(),
+            nextRevision = ""
+        )
+    }
+}
