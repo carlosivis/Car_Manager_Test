@@ -5,7 +5,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.koin.core.component.KoinComponent
 
-class HomeViewModel(): ViewModel(), KoinComponent {
+class HomeViewModel(
+    private val navigation: HomeNavigation,
+): ViewModel(), KoinComponent {
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state.asStateFlow()
 
@@ -13,7 +15,7 @@ class HomeViewModel(): ViewModel(), KoinComponent {
     fun dispatchAction(action: HomeViewAction){
         when(action){
             is HomeViewAction.GetCars -> getCars()
-            is HomeViewAction.Navigate.ToAddCar -> TODO()
+            is HomeViewAction.Navigate.ToAddCar -> navigation.navigateToAddCar()
             is HomeViewAction.Navigate.ToDetailsCar -> TODO()
             is HomeViewAction.Navigate.ToEditCar -> TODO()
             is HomeViewAction.DeleteCar -> TODO()

@@ -9,16 +9,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-class CreateViewModel : ViewModel(), KoinComponent {
+class CreateCarViewModel(
+    private val navigation: CreateCarNavigation
+) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow(CreateViewState())
     val state = _state.asStateFlow()
 
-    fun dispatchAction(action: CreateViewAction) {
+    fun dispatchAction(action: CreateCarViewAction) {
         when (action) {
-            is CreateViewAction.OnCarChanged -> onCarChanged(action.car)
-            is CreateViewAction.OnClickSaveButton -> onClickSaveButton()
-            is CreateViewAction.PopBackStack -> TODO()
+            is CreateCarViewAction.OnCarChanged -> onCarChanged(action.car)
+            is CreateCarViewAction.OnClickSaveButton -> onClickSaveButton()
+            is CreateCarViewAction.PopBackStack -> navigation.popBackStack()
         }
     }
 

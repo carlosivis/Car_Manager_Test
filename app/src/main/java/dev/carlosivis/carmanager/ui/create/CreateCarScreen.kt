@@ -15,7 +15,7 @@ import dev.carlosivis.carmanager.model.Brands
 import dev.carlosivis.carmanager.ui.theme.Dimens
 
 @Composable
-fun CreateScreen(viewModel: CreateViewModel) {
+fun CreateScreen(viewModel: CreateCarViewModel) {
     val state by viewModel.state.collectAsState()
     val action = viewModel::dispatchAction
 
@@ -26,7 +26,7 @@ fun CreateScreen(viewModel: CreateViewModel) {
 @Composable
 private fun Content(
     state: CreateViewState,
-    action: (CreateViewAction) -> Unit
+    action: (CreateCarViewAction) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -56,7 +56,7 @@ private fun Content(
 
                 OutlinedTextField(
                     value = state.car.name,
-                    onValueChange = { action(CreateViewAction.OnCarChanged(state.car.copy(name = it))) },
+                    onValueChange = { action(CreateCarViewAction.OnCarChanged(state.car.copy(name = it))) },
                     label = { Text(text = stringResource(id = R.string.name_label)) },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -89,7 +89,7 @@ private fun Content(
                                 DropdownMenuItem(
                                     text = { Text(text = brand) },
                                     onClick = {
-                                        action(CreateViewAction.OnCarChanged(state.car.copy(brand = brand)))
+                                        action(CreateCarViewAction.OnCarChanged(state.car.copy(brand = brand)))
                                         isExpanded = false
                                     }
                                 )
@@ -99,7 +99,7 @@ private fun Content(
 
                     OutlinedTextField(
                         value = state.car.model,
-                        onValueChange = { action(CreateViewAction.OnCarChanged(state.car.copy(model = it))) },
+                        onValueChange = { action(CreateCarViewAction.OnCarChanged(state.car.copy(model = it))) },
                         label = { Text(text = stringResource(id = R.string.model_label)) },
                         modifier = Modifier.weight(1f)
                     )
@@ -113,14 +113,14 @@ private fun Content(
                         value = state.car.year.toString(),
                         onValueChange = {
                             val year = it.toIntOrNull() ?: 0
-                            action(CreateViewAction.OnCarChanged(state.car.copy(year = year)))
+                            action(CreateCarViewAction.OnCarChanged(state.car.copy(year = year)))
                         },
                         label = { Text(text = stringResource(id = R.string.year_label)) },
                         modifier = Modifier.weight(1f)
                     )
                     OutlinedTextField(
                         value = state.car.color,
-                        onValueChange = { action(CreateViewAction.OnCarChanged(state.car.copy(color = it))) },
+                        onValueChange = { action(CreateCarViewAction.OnCarChanged(state.car.copy(color = it))) },
                         label = { Text(text = stringResource(id = R.string.color_label)) },
                         modifier = Modifier.weight(1f)
                     )
@@ -144,7 +144,7 @@ private fun Content(
 
                 OutlinedTextField(
                     value = state.car.nextRevision,
-                    onValueChange = { action(CreateViewAction.OnCarChanged(state.car.copy(nextRevision = it))) },
+                    onValueChange = { action(CreateCarViewAction.OnCarChanged(state.car.copy(nextRevision = it))) },
                     label = { Text(text = stringResource(id = R.string.next_revision_label)) },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -152,7 +152,7 @@ private fun Content(
         }
 
         Button(
-            onClick = { action(CreateViewAction.OnClickSaveButton) },
+            onClick = { action(CreateCarViewAction.OnClickSaveButton) },
             modifier = Modifier.fillMaxWidth(),
             enabled = state.isValid
         ) {

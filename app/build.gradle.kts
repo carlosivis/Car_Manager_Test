@@ -52,13 +52,13 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
     implementation(libs.koin.core)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.firestore.ktx)
 
-
+    implementation(libs.androidx.navigation.compose)
 
 
 
