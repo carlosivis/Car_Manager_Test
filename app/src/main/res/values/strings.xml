@@ -9,4 +9,7 @@
     <string name="latest_revision_label">Última Revisão</string>
     <string name="next_revision_label">Próxima Revisão</string>
     <string name="save_button_label">Salvar</string>
+    <string name="basic_info_title">Informações Básicas</string>
+    <string name="maintenance_info_title">Informações de Manutenção</string>
+
 </resources>

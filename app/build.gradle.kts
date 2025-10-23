@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("kotlin-parcelize")
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -53,6 +54,10 @@ dependencies {
 
     implementation(libs.koin.android)
     implementation(libs.koin.core)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore.ktx)
+
 
 
 
