@@ -7,8 +7,6 @@ import dev.carlosivis.carmanager.repository.CarRepository
 import dev.carlosivis.carmanager.repository.CarRepositoryImpl
 import dev.carlosivis.carmanager.ui.create.CreateCarNavigation
 import dev.carlosivis.carmanager.ui.create.CreateCarViewModel
-import dev.carlosivis.carmanager.ui.details.DetailsNavigation
-import dev.carlosivis.carmanager.ui.details.DetailsViewModel
 import dev.carlosivis.carmanager.ui.home.HomeNavigation
 import dev.carlosivis.carmanager.ui.home.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -27,10 +25,8 @@ val carManagerAppModule = module {
 
     single<HomeNavigation> { CarNavigationImpl(get()) }
     single<CreateCarNavigation> { CarNavigationImpl(get()) }
-    single<DetailsNavigation> { CarNavigationImpl(get()) }
 
     viewModel { HomeViewModel(get(), get()) }
     viewModel { CreateCarViewModel(get(), get()) }
-    viewModel { DetailsViewModel(get()) }
 
 }

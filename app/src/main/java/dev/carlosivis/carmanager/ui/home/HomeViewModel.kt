@@ -24,7 +24,6 @@ class HomeViewModel(
         when(action){
             is HomeViewAction.GetCars -> getCars()
             is HomeViewAction.Navigate.ToAddCar -> navigation.navigateToAddCar()
-            is HomeViewAction.Navigate.ToDetailsCar -> navigation.navigateToDetails(action.carId)
             is HomeViewAction.Navigate.ToEditCar -> TODO()
             is HomeViewAction.DeleteCar -> TODO()
         }
