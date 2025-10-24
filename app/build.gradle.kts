@@ -56,7 +56,7 @@ dependencies {
     implementation(libs.koin.core)
 
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.firestore)
 
     implementation(libs.androidx.navigation.compose)
 

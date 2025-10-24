@@ -6,4 +6,6 @@ sealed class CreateCarViewAction {
     object PopBackStack : CreateCarViewAction()
     data class OnCarChanged(val car: CarModel) : CreateCarViewAction()
     object OnClickSaveButton : CreateCarViewAction()
+    data class ShowDatePicker(val type: DatePickerType) : CreateCarViewAction()
+    object HideDatePicker : CreateCarViewAction()
 }

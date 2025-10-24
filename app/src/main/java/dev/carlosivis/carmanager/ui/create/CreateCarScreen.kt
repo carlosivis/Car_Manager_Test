@@ -1,10 +1,14 @@
 package dev.carlosivis.carmanager.ui.create
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.carlosivis.carmanager.R
 import dev.carlosivis.carmanager.model.Brands
+import dev.carlosivis.carmanager.ui.components.CustomDatePicker
 import dev.carlosivis.carmanager.ui.theme.Dimens
 
 @Composable
@@ -22,7 +27,7 @@ fun CreateScreen(viewModel: CreateCarViewModel) {
     Content(state = state, action = action)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun Content(
     state: CreateViewState,
@@ -55,9 +60,9 @@ private fun Content(
                 )
 
                 OutlinedTextField(
-                    value = state.car.name,
-                    onValueChange = { action(CreateCarViewAction.OnCarChanged(state.car.copy(name = it))) },
-                    label = { Text(text = stringResource(id = R.string.name_label)) },
+                    value = state.car.plate,
+                    onValueChange = { action(CreateCarViewAction.OnCarChanged(state.car.copy(plate = it))) },
+                    label = { Text(text = stringResource(id = R.string.plate_label)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -78,7 +83,7 @@ private fun Content(
                             readOnly = true,
                             trailingIcon = { Icon(Icons.Default.ArrowDropDown, contentDescription = null) },
                             label = { Text(text = stringResource(id = R.string.brand_label)) },
-                            modifier = Modifier.menuAnchor()
+                            modifier = Modifier.menuAnchor(type = MenuAnchorType.PrimaryEditable ,enabled = true)
                         )
 
                         ExposedDropdownMenu(
@@ -142,12 +147,57 @@ private fun Content(
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                OutlinedTextField(
-                    value = state.car.nextRevision,
-                    onValueChange = { action(CreateCarViewAction.OnCarChanged(state.car.copy(nextRevision = it))) },
-                    label = { Text(text = stringResource(id = R.string.next_revision_label)) },
-                    modifier = Modifier.fillMaxWidth()
+                // Last Revisions
+                Text(
+                    text = "Últimas revisões",
+                    style = MaterialTheme.typography.titleSmall
                 )
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.Small)
+                ) {
+                    state.car.lastestRevision.forEach { date ->
+                        InputChip(
+                            selected = false,
+                            onClick = { /* Nothing to do on click */ },
+                            label = { Text(date) },
+                            trailingIcon = {
+                                Icon(
+                                    Icons.Default.Close,
+                                    contentDescription = "Remove date",
+                                    modifier = Modifier.clickable {
+                                        val updatedList = state.car.lastestRevision - date
+                                        action(CreateCarViewAction.OnCarChanged(state.car.copy(lastestRevision = updatedList)))
+                                    }
+                                )
+                            }
+                        )
+                    }
+                }
+                Button(
+                    onClick = { action(CreateCarViewAction.ShowDatePicker(DatePickerType.LAST_REVISION)) }
+                ) {
+                    Text(stringResource(id = R.string.add_revision_button))
+                }
+                Spacer(modifier = Modifier.height(Dimens.Medium))
+
+                Box {
+                    OutlinedTextField(
+                        value = state.car.nextRevision.ifEmpty { stringResource(id = R.string.select_date_placeholder) },
+                        onValueChange = {},
+                        label = { Text(text = stringResource(id = R.string.next_revision_label)) },
+                        readOnly = true,
+                        trailingIcon = {
+                            Icon(Icons.Default.DateRange, contentDescription = stringResource(id = R.string.next_revision_label))
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clickable { action(CreateCarViewAction.ShowDatePicker(DatePickerType.NEXT_REVISION)) }
+                    )
+                }
             }
         }
 
@@ -158,5 +208,24 @@ private fun Content(
         ) {
             Text(text = stringResource(id = R.string.save_button_label))
         }
+    }
+
+    AnimatedVisibility(state.showDatePicker) {
+        CustomDatePicker(
+            onDateSelected = { date ->
+                when (state.datePickerType) {
+                    DatePickerType.LAST_REVISION -> {
+                        val updatedList = state.car.lastestRevision + date
+                        action(CreateCarViewAction.OnCarChanged(state.car.copy(lastestRevision = updatedList)))
+                    }
+                    DatePickerType.NEXT_REVISION -> {
+                        action(CreateCarViewAction.OnCarChanged(state.car.copy(nextRevision = date)))
+                    }
+                    DatePickerType.NONE -> Unit
+                }
+                action(CreateCarViewAction.HideDatePicker)
+            },
+            onDismiss = { action(CreateCarViewAction.HideDatePicker) }
+        )
     }
 }

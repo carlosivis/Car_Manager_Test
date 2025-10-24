@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class CarModel(
     val id: Long,
-    val name: String,
+    val plate: String,
     val brand: String,
     val model: String,
     val year: Int,
@@ -18,7 +18,7 @@ data class CarModel(
     companion object {
         fun empty() = CarModel(
             id = 0,
-            name = "",
+            plate = "",
             brand = "",
             model = "",
             year = 0,

@@ -7,11 +7,18 @@ data class CreateViewState(
     val isLoading: Boolean = false,
     val car: CarModel = CarModel.empty(),
     val isValid: Boolean = false,
-    val navigateBack: Boolean = false
+    val navigateBack: Boolean = false,
+    val showDatePicker: Boolean = false,
+    val datePickerType: DatePickerType = DatePickerType.NONE
 )
+enum class DatePickerType {
+    LAST_REVISION,
+    NEXT_REVISION,
+    NONE
+}
 
 fun CreateViewState.validateFields(): Boolean {
-    return car.name.isNotBlank() &&
+    return car.plate.isNotBlank() &&
            car.brand.isNotBlank() &&
            car.model.isNotBlank() &&
            car.year > 1900 &&

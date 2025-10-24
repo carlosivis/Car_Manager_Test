@@ -10,8 +10,8 @@ activityCompose = "1.11.0"
 composeBom = "2024.09.00"
 koin = "4.1.1"
 googleServices = "4.4.4"
-firebaseBom = "33.2.1"
-navigationCompose = "2.7.7"
+firebaseBom = "34.4.0"
+navigationCompose = "2.9.5"
 
 
 [libraries]
@@ -33,7 +33,7 @@ koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compos
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" } # ADICIONE
-firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx" } # ADICIONE
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" } # ADICIONE
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 

@@ -3,14 +3,18 @@ package dev.carlosivis.carmanager.ui.create
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.carlosivis.carmanager.model.CarModel
+import dev.carlosivis.carmanager.repository.CarRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class CreateCarViewModel(
-    private val navigation: CreateCarNavigation
+    private val navigation: CreateCarNavigation,
+    private val carRepository: CarRepository
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow(CreateViewState())
@@ -20,6 +24,8 @@ class CreateCarViewModel(
         when (action) {
             is CreateCarViewAction.OnCarChanged -> onCarChanged(action.car)
             is CreateCarViewAction.OnClickSaveButton -> onClickSaveButton()
+            is CreateCarViewAction.ShowDatePicker -> showDatePicker(action.type)
+            is CreateCarViewAction.HideDatePicker -> hideDatePicker()
             is CreateCarViewAction.PopBackStack -> navigation.popBackStack()
         }
     }
@@ -32,27 +38,26 @@ class CreateCarViewModel(
         }
     }
 
+    private fun showDatePicker(type: DatePickerType) {
+        _state.update { it.copy(
+            showDatePicker = true,
+            datePickerType = type
+        ) }
+    }
+
+    private fun hideDatePicker() {
+        _state.update { it.copy(
+            showDatePicker = false,
+            datePickerType = DatePickerType.NONE
+        ) }
+    }
+
+
     private fun onClickSaveButton() {
         viewModelScope.launch {
             try {
-//                _state.update { it.copy(isLoading = true, error = null) }
-//
-//                // Validate year
-//                val currentYear = LocalDate.now().year
-//                if (state.value.car.year > currentYear) {
-//                    throw IllegalArgumentException("O ano não pode ser maior que o ano atual")
-//                }
-//
-//                // Validate date format for nextRevision
-//                try {
-//                    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-//                    LocalDate.parse(state.value.car.nextRevision, formatter)
-//                } catch (e: Exception) {
-//                    throw IllegalArgumentException("Data da próxima revisão inválida. Use o formato dd/mm/aaaa")
-//                }
-
-                // TODO: Add your repository call here to save the car
-                // val savedCar = carRepository.saveCar(state.value.car)
+                _state.update { it.copy(isLoading = true, error = null) }
+                carRepository.addCar(state.value.car)
 
                 _state.update { it.copy(
                     isLoading = false,
