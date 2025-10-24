@@ -19,9 +19,6 @@ enum class DatePickerType {
 
 fun CreateViewState.validateFields(): Boolean {
     return car.plate.isNotBlank() &&
-           car.brand.isNotBlank() &&
-           car.model.isNotBlank() &&
-           car.year > 1900 &&
-           car.color.isNotBlank() &&
+           car.lastestRevision.isNotEmpty() &&
            car.nextRevision.isNotBlank()
 }
