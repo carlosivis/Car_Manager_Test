@@ -2,6 +2,10 @@ package dev.carlosivis.carmanager.ui.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -26,6 +31,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -77,8 +83,8 @@ private fun Content(
             items(state.cars) {
                 CarCard(
                     car = it,
-                    edit = { action(HomeViewAction.Navigate.ToEditCar(it.id)) },
-                    delete = { action(HomeViewAction.DeleteCar(it.id)) }
+                    //edit = { action(HomeViewAction.Navigate.ToEditCar(it.id)) },
+                    delete = { action(HomeViewAction.DeleteCar(it.plate)) }
                 )
             }
         }
@@ -88,10 +94,36 @@ private fun Content(
 @Composable
 fun CarCard(
     car: CarModel,
-    edit: () -> Unit,
+    //edit: () -> Unit,
     delete: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Confirmar exclusão") },
+            text = { Text("Você tem certeza que deseja excluir este carro?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        delete()
+                        showDeleteDialog = false
+                    }
+                ) {
+                    Text("Excluir")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDeleteDialog = false }
+                ) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
 
     Card(
         shape = RoundedCornerShape(Shapes.ExtraLarge),
@@ -101,52 +133,76 @@ fun CarCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = Dimens.Small)
-            .clickable { expanded = !expanded }
-            .animateContentSize()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = Dimens.Large)
+                .clickable { expanded = !expanded }
+                .animateContentSize()
+                .padding(horizontal = Dimens.Large, vertical = Dimens.Medium)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = car.plate + " - " + car.nextRevision,
-                    modifier = Modifier.weight(1f),
-                    fontSize = FontSizes.BodyLarge,
-                )
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = car.plate,
+                        fontSize = FontSizes.BodyLarge,
+                    )
+                    Spacer(modifier = Modifier.height(Dimens.ExtraSmall))
+                    Text(
+                        text = "Próxima revisão: ${car.nextRevision}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    )
+                }
 
                 Row {
-                    IconButton(onClick = edit) {
-                        Icon(
-                            Icons.Filled.Edit,
-                            "Edit car"
-                        )
-                    }
-                    IconButton(onClick = delete) {
+                    //TODO: add edit config
+//                    IconButton(onClick = edit) {
+//                        Icon(
+//                            Icons.Filled.Edit,
+//                            contentDescription = "Edit car"
+//                        )
+//                    }
+                    IconButton(onClick = { showDeleteDialog = true }) {
                         Icon(
                             Icons.Filled.Delete,
-                            "Delete car"
+                            contentDescription = "Delete car"
                         )
                     }
                 }
             }
 
-            AnimatedVisibility(expanded) {
-                Spacer(modifier = Modifier.height(Dimens.Medium))
-                Text(text = "Model: ${car.model}", style = MaterialTheme.typography.bodyLarge)
-                Spacer(modifier = Modifier.height(Dimens.Medium))
-                Text(text = "Brand: ${car.brand}", style = MaterialTheme.typography.bodyLarge)
-                Spacer(modifier = Modifier.height(Dimens.Small))
-                Text(text = "Year: ${car.year}", style = MaterialTheme.typography.bodyLarge)
-                Spacer(modifier = Modifier.height(Dimens.Small))
-                Text(text = "Plate: ${car.plate}", style = MaterialTheme.typography.bodyLarge)
-                Spacer(modifier = Modifier.height(Dimens.Small))
-                Text(text = "Next Revision: ${car.nextRevision}", style = MaterialTheme.typography.bodyLarge)
+            AnimatedVisibility(
+                visible = expanded,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = Dimens.Medium)
+                ) {
+                    Text(text = "Modelo: " + car.model)
+                    Spacer(modifier = Modifier.height(Dimens.Small))
+                    Text(text = "Marca: " + car.brand)
+                    Spacer(modifier = Modifier.height(Dimens.Small))
+                    Text(text = "Ano: " + car.year.toString())
+                    Spacer(modifier = Modifier.height(Dimens.Small))
+                    Text(text = "Placa: " + car.plate)
+                    Spacer(modifier = Modifier.height(Dimens.Small))
+                    Text(text = "Últimas Revisões:")
+                    Spacer(modifier = Modifier.height(Dimens.ExtraSmall))
+                    car.lastestRevision.forEach { revision ->
+                        Text(
+                            text = "• $revision",
+                            modifier = Modifier.padding(start = Dimens.Small)
+                        )
+                    }
+                }
             }
         }
 

@@ -7,5 +7,5 @@ sealed class HomeViewAction {
         object ToAddCar : HomeViewAction()
         data class ToEditCar(val carId: Long) : HomeViewAction()
     }
-    data class DeleteCar(val carId: Long) : HomeViewAction()
+    data class DeleteCar(val plate: String) : HomeViewAction()
 }

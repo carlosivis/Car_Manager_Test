@@ -25,13 +25,20 @@ class HomeViewModel(
             is HomeViewAction.GetCars -> getCars()
             is HomeViewAction.Navigate.ToAddCar -> navigation.navigateToAddCar()
             is HomeViewAction.Navigate.ToEditCar -> TODO()
-            is HomeViewAction.DeleteCar -> TODO()
+            is HomeViewAction.DeleteCar -> deleteCar(action.plate)
         }
     }
 
     private fun getCars(){
         viewModelScope.launch {
             _state.update { it.copy(cars = carRepository.getCars()) }
+        }
+    }
+
+    private fun deleteCar(plate: String) {
+        viewModelScope.launch {
+            carRepository.deleteCar(plate)
+            getCars()
         }
     }
 

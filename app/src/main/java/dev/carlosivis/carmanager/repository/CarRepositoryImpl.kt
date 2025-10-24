@@ -21,15 +21,11 @@ class CarRepositoryImpl(private val firestore: FirebaseFirestore) : CarRepositor
         firestore.collection("cars").add(car).await()
     }
 
-    override suspend fun getCar(id: String): CarModel? {
-        return try {
-            firestore.collection("cars")
-                .document(id)
-                .get()
-                .await()
-                .toObject(CarModel::class.java)
-        } catch (e: Exception) {
-            null
+    override suspend fun deleteCar(plate: String) {
+        val query = firestore.collection("cars").whereEqualTo("plate", plate)
+        val documents = query.get().await().documents
+        if (documents.isNotEmpty()) {
+            documents[0].reference.delete().await()
         }
     }
 }
