@@ -15,6 +15,7 @@ data class CarModel(
     val lastestRevision: List<String>,
     val nextRevision: String
 ) : Parcelable {
+    constructor() : this(0, "", "", "", 0, "", emptyList(), "")
     companion object {
         fun empty() = CarModel(
             id = 0,

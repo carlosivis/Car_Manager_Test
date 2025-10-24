@@ -14,11 +14,11 @@ internal class CarNavigationImpl(
         navManager.navigate(route = CarRoutes.CreateCar.createRoute())
     }
 
-    override fun navigateToDetails(carId: String) {
+    override fun navigateToDetails(carId: Long) {
         navManager.navigate(route = CarRoutes.Details.createRoute(carId = carId))
     }
 
-    override fun navigateToEditCar(carId: String) {
+    override fun navigateToEditCar(carId: Long) {
         navManager.navigate(route = CarRoutes.EditCar.createRoute(carId = carId))
     }
 

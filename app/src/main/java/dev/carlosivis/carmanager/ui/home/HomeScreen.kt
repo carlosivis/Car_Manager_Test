@@ -103,7 +103,7 @@ fun CarCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                car.plate,
+                car.plate + " - " + car.nextRevision,
                 modifier = Modifier.weight(1f),
                 fontSize = FontSizes.BodyLarge
             )

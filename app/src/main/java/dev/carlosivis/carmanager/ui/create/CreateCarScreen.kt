@@ -33,199 +33,205 @@ private fun Content(
     state: CreateViewState,
     action: (CreateCarViewAction) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(Dimens.Medium),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(Dimens.Medium)
-    ) {
-        if (state.isLoading) {
+    AnimatedVisibility(state.isLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
             CircularProgressIndicator()
         }
-
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
+    }
+        Box {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
                     .padding(Dimens.Medium),
-                verticalArrangement = Arrangement.spacedBy(Dimens.Small)
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(Dimens.Medium)
             ) {
-                Text(
-                    text = stringResource(id = R.string.basic_info_title),
-                    style = MaterialTheme.typography.titleMedium
-                )
-
-                OutlinedTextField(
-                    value = state.car.plate,
-                    onValueChange = { action(CreateCarViewAction.OnCarChanged(state.car.copy(plate = it))) },
-                    label = { Text(text = stringResource(id = R.string.plate_label)) },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Row(
+                Card(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Dimens.Small)
                 ) {
-                    var isExpanded by remember { mutableStateOf(false) }
-
-                    ExposedDropdownMenuBox(
-                        expanded = isExpanded,
-                        onExpandedChange = { isExpanded = it },
-                        modifier = Modifier.weight(1f)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(Dimens.Medium),
+                        verticalArrangement = Arrangement.spacedBy(Dimens.Small)
                     ) {
-                        OutlinedTextField(
-                            value = state.car.brand,
-                            onValueChange = {},
-                            readOnly = true,
-                            trailingIcon = { Icon(Icons.Default.ArrowDropDown, contentDescription = null) },
-                            label = { Text(text = stringResource(id = R.string.brand_label)) },
-                            modifier = Modifier.menuAnchor(type = MenuAnchorType.PrimaryEditable ,enabled = true)
+                        Text(
+                            text = stringResource(id = R.string.basic_info_title),
+                            style = MaterialTheme.typography.titleMedium
                         )
 
-                        ExposedDropdownMenu(
-                            expanded = isExpanded,
-                            onDismissRequest = { isExpanded = false }
+                        OutlinedTextField(
+                            value = state.car.plate,
+                            onValueChange = { action(CreateCarViewAction.OnCarChanged(state.car.copy(plate = it))) },
+                            label = { Text(text = stringResource(id = R.string.plate_label)) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(Dimens.Small)
                         ) {
-                            Brands.carBrands.forEach { brand ->
-                                DropdownMenuItem(
-                                    text = { Text(text = brand) },
-                                    onClick = {
-                                        action(CreateCarViewAction.OnCarChanged(state.car.copy(brand = brand)))
-                                        isExpanded = false
+                            var isExpanded by remember { mutableStateOf(false) }
+
+                            ExposedDropdownMenuBox(
+                                expanded = isExpanded,
+                                onExpandedChange = { isExpanded = it },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                OutlinedTextField(
+                                    value = state.car.brand,
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    trailingIcon = { Icon(Icons.Default.ArrowDropDown, contentDescription = null) },
+                                    label = { Text(text = stringResource(id = R.string.brand_label)) },
+                                    modifier = Modifier.menuAnchor(type = MenuAnchorType.PrimaryEditable ,enabled = true)
+                                )
+
+                                ExposedDropdownMenu(
+                                    expanded = isExpanded,
+                                    onDismissRequest = { isExpanded = false }
+                                ) {
+                                    Brands.carBrands.forEach { brand ->
+                                        DropdownMenuItem(
+                                            text = { Text(text = brand) },
+                                            onClick = {
+                                                action(CreateCarViewAction.OnCarChanged(state.car.copy(brand = brand)))
+                                                isExpanded = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+
+                            OutlinedTextField(
+                                value = state.car.model,
+                                onValueChange = { action(CreateCarViewAction.OnCarChanged(state.car.copy(model = it))) },
+                                label = { Text(text = stringResource(id = R.string.model_label)) },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(Dimens.Small)
+                        ) {
+                            OutlinedTextField(
+                                value = state.car.year.toString(),
+                                onValueChange = {
+                                    val year = it.toIntOrNull() ?: 0
+                                    action(CreateCarViewAction.OnCarChanged(state.car.copy(year = year)))
+                                },
+                                label = { Text(text = stringResource(id = R.string.year_label)) },
+                                modifier = Modifier.weight(1f)
+                            )
+                            OutlinedTextField(
+                                value = state.car.color,
+                                onValueChange = { action(CreateCarViewAction.OnCarChanged(state.car.copy(color = it))) },
+                                label = { Text(text = stringResource(id = R.string.color_label)) },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                }
+
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(Dimens.Medium),
+                        verticalArrangement = Arrangement.spacedBy(Dimens.Small)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.maintenance_info_title),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+
+                        // Last Revisions
+                        Text(
+                            text = "Últimas revisões",
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                        FlowRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(Dimens.Small)
+                        ) {
+                            state.car.lastestRevision.forEach { date ->
+                                InputChip(
+                                    selected = false,
+                                    onClick = { /* Nothing to do on click */ },
+                                    label = { Text(date) },
+                                    trailingIcon = {
+                                        Icon(
+                                            Icons.Default.Close,
+                                            contentDescription = "Remove date",
+                                            modifier = Modifier.clickable {
+                                                val updatedList = state.car.lastestRevision - date
+                                                action(CreateCarViewAction.OnCarChanged(state.car.copy(lastestRevision = updatedList)))
+                                            }
+                                        )
                                     }
                                 )
                             }
                         }
-                    }
+                        Button(
+                            onClick = { action(CreateCarViewAction.ShowDatePicker(DatePickerType.LAST_REVISION)) }
+                        ) {
+                            Text(stringResource(id = R.string.add_revision_button))
+                        }
+                        Spacer(modifier = Modifier.height(Dimens.Medium))
 
-                    OutlinedTextField(
-                        value = state.car.model,
-                        onValueChange = { action(CreateCarViewAction.OnCarChanged(state.car.copy(model = it))) },
-                        label = { Text(text = stringResource(id = R.string.model_label)) },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Dimens.Small)
-                ) {
-                    OutlinedTextField(
-                        value = state.car.year.toString(),
-                        onValueChange = {
-                            val year = it.toIntOrNull() ?: 0
-                            action(CreateCarViewAction.OnCarChanged(state.car.copy(year = year)))
-                        },
-                        label = { Text(text = stringResource(id = R.string.year_label)) },
-                        modifier = Modifier.weight(1f)
-                    )
-                    OutlinedTextField(
-                        value = state.car.color,
-                        onValueChange = { action(CreateCarViewAction.OnCarChanged(state.car.copy(color = it))) },
-                        label = { Text(text = stringResource(id = R.string.color_label)) },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-            }
-        }
-
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(Dimens.Medium),
-                verticalArrangement = Arrangement.spacedBy(Dimens.Small)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.maintenance_info_title),
-                    style = MaterialTheme.typography.titleMedium
-                )
-
-                // Last Revisions
-                Text(
-                    text = "Últimas revisões",
-                    style = MaterialTheme.typography.titleSmall
-                )
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Dimens.Small)
-                ) {
-                    state.car.lastestRevision.forEach { date ->
-                        InputChip(
-                            selected = false,
-                            onClick = { /* Nothing to do on click */ },
-                            label = { Text(date) },
-                            trailingIcon = {
-                                Icon(
-                                    Icons.Default.Close,
-                                    contentDescription = "Remove date",
-                                    modifier = Modifier.clickable {
-                                        val updatedList = state.car.lastestRevision - date
-                                        action(CreateCarViewAction.OnCarChanged(state.car.copy(lastestRevision = updatedList)))
-                                    }
-                                )
-                            }
-                        )
+                        Box {
+                            OutlinedTextField(
+                                value = state.car.nextRevision.ifEmpty { stringResource(id = R.string.select_date_placeholder) },
+                                onValueChange = {},
+                                label = { Text(text = stringResource(id = R.string.next_revision_label)) },
+                                readOnly = true,
+                                trailingIcon = {
+                                    Icon(Icons.Default.DateRange, contentDescription = stringResource(id = R.string.next_revision_label))
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .clickable { action(CreateCarViewAction.ShowDatePicker(DatePickerType.NEXT_REVISION)) }
+                            )
+                        }
                     }
                 }
+
                 Button(
-                    onClick = { action(CreateCarViewAction.ShowDatePicker(DatePickerType.LAST_REVISION)) }
+                    onClick = { action(CreateCarViewAction.OnClickSaveButton) },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = state.isValid
                 ) {
-                    Text(stringResource(id = R.string.add_revision_button))
-                }
-                Spacer(modifier = Modifier.height(Dimens.Medium))
-
-                Box {
-                    OutlinedTextField(
-                        value = state.car.nextRevision.ifEmpty { stringResource(id = R.string.select_date_placeholder) },
-                        onValueChange = {},
-                        label = { Text(text = stringResource(id = R.string.next_revision_label)) },
-                        readOnly = true,
-                        trailingIcon = {
-                            Icon(Icons.Default.DateRange, contentDescription = stringResource(id = R.string.next_revision_label))
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .clickable { action(CreateCarViewAction.ShowDatePicker(DatePickerType.NEXT_REVISION)) }
-                    )
+                    Text(text = stringResource(id = R.string.save_button_label))
                 }
             }
-        }
 
-        Button(
-            onClick = { action(CreateCarViewAction.OnClickSaveButton) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = state.isValid
-        ) {
-            Text(text = stringResource(id = R.string.save_button_label))
+            AnimatedVisibility(state.showDatePicker) {
+                CustomDatePicker(
+                    onDateSelected = { date ->
+                        when (state.datePickerType) {
+                            DatePickerType.LAST_REVISION -> {
+                                val updatedList = state.car.lastestRevision + date
+                                action(CreateCarViewAction.OnCarChanged(state.car.copy(lastestRevision = updatedList)))
+                            }
+                            DatePickerType.NEXT_REVISION -> {
+                                action(CreateCarViewAction.OnCarChanged(state.car.copy(nextRevision = date)))
+                            }
+                            DatePickerType.NONE -> Unit
+                        }
+                        action(CreateCarViewAction.HideDatePicker)
+                    },
+                    onDismiss = { action(CreateCarViewAction.HideDatePicker) }
+                )
+            }
         }
     }
-
-    AnimatedVisibility(state.showDatePicker) {
-        CustomDatePicker(
-            onDateSelected = { date ->
-                when (state.datePickerType) {
-                    DatePickerType.LAST_REVISION -> {
-                        val updatedList = state.car.lastestRevision + date
-                        action(CreateCarViewAction.OnCarChanged(state.car.copy(lastestRevision = updatedList)))
-                    }
-                    DatePickerType.NEXT_REVISION -> {
-                        action(CreateCarViewAction.OnCarChanged(state.car.copy(nextRevision = date)))
-                    }
-                    DatePickerType.NONE -> Unit
-                }
-                action(CreateCarViewAction.HideDatePicker)
-            },
-            onDismiss = { action(CreateCarViewAction.HideDatePicker) }
-        )
-    }
-}

@@ -20,4 +20,16 @@ class CarRepositoryImpl(private val firestore: FirebaseFirestore) : CarRepositor
     override suspend fun addCar(car: CarModel) {
         firestore.collection("cars").add(car).await()
     }
+
+    override suspend fun getCar(id: String): CarModel? {
+        return try {
+            firestore.collection("cars")
+                .document(id)
+                .get()
+                .await()
+                .toObject(CarModel::class.java)
+        } catch (e: Exception) {
+            null
+        }
+    }
 }

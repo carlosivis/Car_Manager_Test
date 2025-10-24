@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.carlosivis.carmanager.model.CarModel
 import dev.carlosivis.carmanager.repository.CarRepository
+import kotlinx.coroutines.Delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -61,8 +62,8 @@ class CreateCarViewModel(
 
                 _state.update { it.copy(
                     isLoading = false,
-                    navigateBack = true
                 ) }
+                navigation.popBackStack()
             } catch (e: Exception) {
                 _state.update { it.copy(
                     isLoading = false,

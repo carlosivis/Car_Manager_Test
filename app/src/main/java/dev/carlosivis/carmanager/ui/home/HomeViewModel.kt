@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dev.carlosivis.carmanager.repository.CarRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
@@ -15,12 +16,15 @@ class HomeViewModel(
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state.asStateFlow()
 
+    init {
+        getCars()
+    }
 
     fun dispatchAction(action: HomeViewAction){
         when(action){
             is HomeViewAction.GetCars -> getCars()
             is HomeViewAction.Navigate.ToAddCar -> navigation.navigateToAddCar()
-            is HomeViewAction.Navigate.ToDetailsCar -> TODO()
+            is HomeViewAction.Navigate.ToDetailsCar -> navigation.navigateToDetails(action.carId)
             is HomeViewAction.Navigate.ToEditCar -> TODO()
             is HomeViewAction.DeleteCar -> TODO()
         }
@@ -28,7 +32,7 @@ class HomeViewModel(
 
     private fun getCars(){
         viewModelScope.launch {
-            _state.value = _state.value.copy(cars = carRepository.getCars())
+            _state.update { it.copy(cars = carRepository.getCars()) }
         }
     }
 

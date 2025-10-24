@@ -19,7 +19,7 @@ object CarRoutes : Routes {
             NavArg(id = ARG_CAR_ID, type = NavType.StringType) // Usando String para ID do Firestore
         )
     ) {
-        fun createRoute(carId: String): String {
+        fun createRoute(carId: Long): String {
             return putArgs(ARG_CAR_ID to carId)
         }
     }
@@ -33,7 +33,7 @@ object CarRoutes : Routes {
         )
     ) {
         // Helper para criar a rota com o ID
-        fun createRoute(carId: String): String {
+        fun createRoute(carId: Long): String {
             return putArgs(ARG_CAR_ID to carId)
         }
     }
